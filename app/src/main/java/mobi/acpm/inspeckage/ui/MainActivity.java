@@ -1,6 +1,7 @@
 package mobi.acpm.inspeckage.ui;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Intent;
@@ -15,6 +16,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
@@ -107,6 +109,8 @@ public class MainActivity extends AppCompatActivity
             }
             hideItem();
         }
+
+        setWorldReadable();
     }
 
     @Override
@@ -291,5 +295,22 @@ public class MainActivity extends AppCompatActivity
         File root = new File(appPath + Config.P_ROOT);
         FileUtil.deleteRecursive(root);
 
+    }
+
+
+    @SuppressWarnings({"deprecation", "ResultOfMethodCallIgnored"})
+    @SuppressLint({"SetWorldReadable", "WorldReadableFiles"})
+    private void setWorldReadable() {
+        File dataDir = new File(getApplicationInfo().dataDir);
+        File prefsDir = new File(dataDir, "shared_prefs");
+        File prefsFile = new File(prefsDir, Module.PREFS+".xml");
+        Log.d("Q_M", "if 设置 文件可读 之前" + prefsFile);
+        if (prefsFile.exists()) {
+            Log.d("Q_M", "for 循环设置 文件可读 之前");
+            for (File file : new File[]{dataDir, prefsDir, prefsFile}) {
+                file.setReadable(true, false);
+                file.setExecutable(true, false);
+            }
+        }
     }
 }
